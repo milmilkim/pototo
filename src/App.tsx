@@ -1,4 +1,4 @@
-import Pototo from "./Pototo";
+import Pototo from './Pototo';
 
 const App = () => {
   return (
