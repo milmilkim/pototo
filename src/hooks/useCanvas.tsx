@@ -94,19 +94,17 @@ export const useCanvas = () => {
   };
 
   const exportJson = () => {
-    checkCanvasInitialized();
     return fabricCanvas?.current?.toObject();
   };
 
-  const checkCanvasInitialized = () => {
-    if (!fabricCanvas?.current) {
-      throw new Error('캔버스가 초기화되지 않았습니다.');
-    }
-  };
+  // const checkCanvasInitialized = () => {
+  //   if (!fabricCanvas?.current) {
+  //     throw new Error('캔버스가 초기화되지 않았습니다.');
+  //   }
+  // };
 
-  const addText = (text: string) => {
-    checkCanvasInitialized();
-    fabricCanvas?.current?.add(new fabric.IText(text));
+  const addText = (text: string, options?: Partial<fabric.ITextProps>) => {
+    fabricCanvas?.current?.add(new fabric.IText(text, options));
   };
 
   const setZoom = (zoom: number) => {
