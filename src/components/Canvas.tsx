@@ -1,20 +1,18 @@
-import { useContext, useEffect, useRef } from "react";
-import * as fabric from "fabric"; // v6
-import { PototoContext } from "../Pototo";
+import { useContext, useEffect, useRef } from 'react';
+import { PototoContext } from '../Pototo';
+import { useCanvas } from '../hooks/useCanvas';
 
 const Canvas = () => {
   const canvasElRef = useRef<HTMLCanvasElement | null>(null);
 
-  const { setFabricCanvas } = useContext(PototoContext);
+  const { fabricCanvas } = useContext(PototoContext);
+  const { init } = useCanvas();
 
   useEffect(() => {
-    const canvasEl = canvasElRef.current;
-    const canvas = new fabric.Canvas(canvasEl!);
-
-    setFabricCanvas(canvas);
+    init(canvasElRef, 500, 500);
 
     return () => {
-      canvas.dispose();
+      fabricCanvas?.current?.dispose();
     };
   }, []);
 
