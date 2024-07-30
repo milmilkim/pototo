@@ -24,7 +24,7 @@ const Pototo: React.FC<PototoProps> = () => {
   return (
     <PototoContext.Provider value={{ fabricCanvas: fabricCanvasRef, setFabricCanvas }}>
       <Toolbar />
-      <Canvas />
+      <Canvas elementWidth={500} elementHeight={500} />
     </PototoContext.Provider>
   );
 };

@@ -11,7 +11,7 @@ export const useCanvas = () => {
   let canvasWidth = 500;
   let canvasHeight = 500;
 
-  let scaleFactor = 1;
+  const scaleFactor = 1;
   let currentZoom = 1;
   const center = { x: 0, y: 0 };
 
@@ -125,5 +125,18 @@ export const useCanvas = () => {
     canvasHeight = height;
   };
 
-  return { addText, init, resetZoom, exportJson, addHistory };
+  const _getSelectedObjects = () => {
+    return fabricCanvas?.current?.getActiveObjects();
+  };
+
+  const deleteObject = () => {
+    const selectedObjects = _getSelectedObjects();
+    if (selectedObjects?.length) {
+      selectedObjects.forEach((object) => fabricCanvas?.current?.remove(object));
+      fabricCanvas?.current?.discardActiveObject();
+      fabricCanvas?.current?.renderAll();
+    }
+  };
+
+  return { addText, init, resetZoom, exportJson, addHistory, deleteObject };
 };
