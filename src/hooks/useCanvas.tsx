@@ -107,6 +107,18 @@ export const useCanvas = () => {
     fabricCanvas?.current?.add(new fabric.IText(text, options));
   };
 
+  const updateTextOptions = (options: Partial<fabric.ITextProps>) => {
+    const selectedObjects = _getSelectedObjects();
+
+    selectedObjects?.forEach((object) => {
+      if (object.type === 'i-text') {
+        object.set(options);
+      }
+    });
+
+    fabricCanvas?.current?.renderAll();
+  };
+
   const setZoom = (zoom: number) => {
     const point = new fabric.Point(CONTAINER_WIDTH / 2, CONTAINER_HEIGHT / 2);
     fabricCanvas?.current?.zoomToPoint(point, zoom);
@@ -136,5 +148,5 @@ export const useCanvas = () => {
     }
   };
 
-  return { addText, init, resetZoom, exportJson, addHistory, deleteObject };
+  return { addText, init, resetZoom, exportJson, addHistory, deleteObject, updateTextOptions };
 };
