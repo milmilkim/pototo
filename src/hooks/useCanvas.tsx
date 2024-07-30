@@ -1,9 +1,9 @@
-import { useContext } from 'react';
-import { PototoContext } from '../Pototo';
 import * as fabric from 'fabric';
 
 const CONTAINER_WIDTH = 500;
 const CONTAINER_HEIGHT = 500;
+import { useContext, useRef } from 'react';
+import { PototoContext } from '../Pototo';
 
 export const useCanvas = () => {
   const { setFabricCanvas, fabricCanvas } = useContext(PototoContext);
@@ -87,7 +87,25 @@ export const useCanvas = () => {
     setFabricCanvas(canvas);
   };
 
+  const history = useRef<fabric.FabricObject[]>([]);
+
+  const addHistory = () => {
+    history.current = [...history.current];
+  };
+
+  const exportJson = () => {
+    checkCanvasInitialized();
+    return fabricCanvas?.current?.toObject();
+  };
+
+  const checkCanvasInitialized = () => {
+    if (!fabricCanvas?.current) {
+      throw new Error('캔버스가 초기화되지 않았습니다.');
+    }
+  };
+
   const addText = (text: string) => {
+    checkCanvasInitialized();
     fabricCanvas?.current?.add(new fabric.IText(text));
   };
 
@@ -107,5 +125,5 @@ export const useCanvas = () => {
     canvasHeight = height;
   };
 
-  return { addText, init, resetZoom };
+  return { addText, init, resetZoom, exportJson, addHistory };
 };

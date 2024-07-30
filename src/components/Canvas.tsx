@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef } from 'react';
-import { PototoContext } from '../Pototo';
 import { useCanvas } from '../hooks/useCanvas';
+import { PototoContext } from '../Pototo';
 
 const Canvas = () => {
   const canvasElRef = useRef<HTMLCanvasElement | null>(null);
@@ -18,7 +18,14 @@ const Canvas = () => {
 
   return (
     <>
-      <canvas width={500} height={500} ref={canvasElRef}></canvas>
+      <canvas
+        width={500}
+        height={500}
+        style={{
+          border: '1px solid #e6e6e6',
+        }}
+        ref={canvasElRef}
+      ></canvas>
     </>
   );
 };

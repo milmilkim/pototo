@@ -1,19 +1,18 @@
-import { useContext, useEffect } from "react";
-import { PototoContext } from "../Pototo";
-import * as fabric from "fabric";
+import { useContext } from 'react';
+import { PototoContext } from '../Pototo';
+import * as fabric from 'fabric';
 
-const Toolbar = () => {
+import { useCanvas } from '../hooks/useCanvas';
+
+interface ToolbarProps {}
+
+const Toolbar: React.FC<ToolbarProps> = () => {
   const { fabricCanvas } = useContext(PototoContext);
 
   const handleClickAddText = (e: React.MouseEvent) => {
     e.preventDefault();
-    fabricCanvas?.current?.add(new fabric.IText("Hello, world!"));
-    console.log("add text");
+    fabricCanvas?.current?.add(new fabric.IText('Hello, world!'));
   };
-
-  useEffect(() => {
-    console.log(fabricCanvas);
-  }, [fabricCanvas]);
 
   return (
     <div>
