@@ -37,7 +37,8 @@ const Canvas: React.FC<CanvasProps> = (props) => {
       fabricCanvasRef?.dispose();
       window.document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [init, fabricCanvas, props.elementWidth, props.elementHeight, deleteObject]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>

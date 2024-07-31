@@ -6,13 +6,12 @@ import { useContext, useRef } from 'react';
 import { PototoContext } from '../Pototo';
 
 export const useCanvas = () => {
-  const { setFabricCanvas, fabricCanvas } = useContext(PototoContext);
+  const { setFabricCanvas, fabricCanvas, setCurrentZoom } = useContext(PototoContext);
 
   let canvasWidth = 500;
   let canvasHeight = 500;
 
   const scaleFactor = 1;
-  let currentZoom = 1;
   const center = { x: 0, y: 0 };
 
   let isDragging = false;
@@ -53,6 +52,7 @@ export const useCanvas = () => {
       if (zoom < 0.01) zoom = 0.01;
 
       setZoom(zoom);
+
       opt.e.preventDefault();
       opt.e.stopPropagation();
     });
@@ -84,7 +84,9 @@ export const useCanvas = () => {
       isDragging = false;
     });
 
-    setFabricCanvas(canvas);
+    if (setFabricCanvas) {
+      setFabricCanvas(canvas);
+    }
   };
 
   const history = useRef<fabric.FabricObject[]>([]);
@@ -122,7 +124,9 @@ export const useCanvas = () => {
   const setZoom = (zoom: number) => {
     const point = new fabric.Point(CONTAINER_WIDTH / 2, CONTAINER_HEIGHT / 2);
     fabricCanvas?.current?.zoomToPoint(point, zoom);
-    currentZoom = zoom;
+    if (setCurrentZoom) {
+      setCurrentZoom(zoom);
+    }
   };
 
   const resetZoom = () => {
