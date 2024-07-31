@@ -25,9 +25,9 @@ const Toolbar: React.FC<ToolbarProps> = () => {
   return (
     <div>
       {currentZoom}
-      <button onClick={handleClickAddText}>add text</button>
-      <button onClick={handleClickDeleteObjects}>delete</button>
-      <button onClick={handleClickChangeColor}>change color</button>
+      <button onClick={handleClickAddText}>텍스트 추가</button>
+      <button onClick={handleClickDeleteObjects}>선택된 오브젝트 삭제</button>
+      <button onClick={handleClickChangeColor}>선택 텍스트 색상 변경</button>
     </div>
   );
 };
