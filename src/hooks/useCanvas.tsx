@@ -51,7 +51,7 @@ export const useCanvas = () => {
       if (zoom > 20) zoom = 20;
       if (zoom < 0.01) zoom = 0.01;
 
-      setZoom(zoom);
+      setZoom(zoom, { x: opt.viewportPoint.x, y: opt.viewportPoint.y });
 
       opt.e.preventDefault();
       opt.e.stopPropagation();
@@ -121,8 +121,8 @@ export const useCanvas = () => {
     fabricCanvas?.current?.renderAll();
   };
 
-  const setZoom = (zoom: number) => {
-    const point = new fabric.Point(CONTAINER_WIDTH / 2, CONTAINER_HEIGHT / 2);
+  const setZoom = (zoom: number, pos?: { x: number; y: number }) => {
+    const point = new fabric.Point(pos?.x ?? CONTAINER_WIDTH / 2, pos?.y ?? CONTAINER_HEIGHT / 2);
     fabricCanvas?.current?.zoomToPoint(point, zoom);
     if (setCurrentZoom) {
       setCurrentZoom(zoom);
