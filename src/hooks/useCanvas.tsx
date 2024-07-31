@@ -152,5 +152,10 @@ export const useCanvas = () => {
     }
   };
 
-  return { addText, init, resetZoom, exportJson, addHistory, deleteObject, updateTextOptions };
+  const addImage = async (url: string) => {
+    const image = await fabric.FabricImage.fromURL(url);
+    fabricCanvas?.current?.add(image);
+  };
+
+  return { addText, init, resetZoom, exportJson, addHistory, deleteObject, updateTextOptions, addImage };
 };
