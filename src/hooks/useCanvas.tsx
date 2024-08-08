@@ -62,6 +62,7 @@ export const useCanvas = () => {
       if (evt.altKey === true) {
         isDragging = true;
         canvas.setCursor('grabbing');
+        canvas.selection = false;
         lastPosX = opt.viewportPoint.x;
         lastPosY = opt.viewportPoint.y;
       }
@@ -69,6 +70,7 @@ export const useCanvas = () => {
 
     canvas.on('mouse:move', (opt) => {
       if (isDragging) {
+        canvas.setCursor('grabbing');
         const vpt = canvas.viewportTransform;
         const deltaX = opt.viewportPoint.x - lastPosX;
         const deltaY = opt.viewportPoint.y - lastPosY;
