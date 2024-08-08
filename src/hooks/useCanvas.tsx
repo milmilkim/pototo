@@ -51,7 +51,7 @@ export const useCanvas = () => {
       if (zoom > 20) zoom = 20;
       if (zoom < 0.01) zoom = 0.01;
 
-      setZoom(zoom, { x: opt.viewportPoint.x, y: opt.viewportPoint.y });
+      setZoom(zoom);
 
       opt.e.preventDefault();
       opt.e.stopPropagation();
