@@ -42,8 +42,13 @@ export const useCanvas = () => {
       padding: 10,
       transparentCorners: false,
       borderColor: '#5771FF',
-      lockScalingX: true,
-      lockScalingY: true,
+
+      _controlsVisibility: {
+        mt: false,
+        mb: false,
+        ml: false,
+        mr: false,
+      },
     };
 
     canvas.on('mouse:wheel', (opt) => {
