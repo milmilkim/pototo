@@ -166,5 +166,38 @@ export const useCanvas = () => {
     fabricCanvas?.current?.add(image);
   };
 
-  return { addText, init, resetZoom, exportJson, addHistory, deleteObject, updateTextOptions, addImage };
+  let _clipboard : fabric.FabricObject
+
+  const copy = async () => {
+    const cloned = await fabricCanvas?.current?.getActiveObject()?.clone()
+    if(cloned) {
+      _clipboard = cloned
+    }
+  }
+  const paste = async () => {
+    if(!_clipboard) return;
+    const clonedObj = await _clipboard.clone();
+    fabricCanvas?.current?.discardActiveObject();
+
+    clonedObj.set({
+      left: clonedObj.left + 10,
+      top: clonedObj.top + 10,
+      evented: true,
+    });
+    if (clonedObj instanceof fabric.ActiveSelection) {
+      clonedObj.canvas = fabricCanvas?.current ?? undefined;
+      clonedObj.forEachObject((obj) => {
+        fabricCanvas?.current?.add(obj);
+      });
+      clonedObj.setCoords();
+    } else {
+      fabricCanvas?.current?.add(clonedObj);
+    }
+    _clipboard.top += 10;
+    _clipboard.left += 10;
+    fabricCanvas?.current?.setActiveObject(clonedObj);
+    fabricCanvas?.current?.requestRenderAll();
+  }
+
+  return { addText, init, resetZoom, exportJson, addHistory, deleteObject, updateTextOptions, addImage, copy, paste };
 };

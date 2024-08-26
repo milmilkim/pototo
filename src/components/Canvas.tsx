@@ -11,7 +11,7 @@ const Canvas: React.FC<CanvasProps> = (props) => {
   const canvasElRef = useRef<HTMLCanvasElement | null>(null);
 
   const { fabricCanvas } = useContext(PototoContext);
-  const { init, deleteObject } = useCanvas();
+  const { init, deleteObject, copy, paste } = useCanvas();
 
   useEffect(() => {
     init(canvasElRef, props.elementWidth, props.elementHeight);
@@ -19,6 +19,21 @@ const Canvas: React.FC<CanvasProps> = (props) => {
 
     const handleKeyDown = (e: KeyboardEvent) => {
       const { key } = e;
+
+      if (e.ctrlKey || e.metaKey) {
+        switch (key) {
+          case 'c':
+            copy()
+            break;
+
+          case 'v':
+            paste()
+            break;
+
+          default:
+            break;
+        }
+      }
 
       switch (key) {
         case 'Backspace':
@@ -48,8 +63,7 @@ const Canvas: React.FC<CanvasProps> = (props) => {
         style={{
           border: '1px solid #e6e6e6',
         }}
-        ref={canvasElRef}
-      ></canvas>
+        ref={canvasElRef}></canvas>
     </>
   );
 };
