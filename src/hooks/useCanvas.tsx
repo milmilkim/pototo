@@ -174,6 +174,7 @@ export const useCanvas = () => {
       _clipboard = cloned
     }
   }
+
   const paste = async () => {
     if(!_clipboard) return;
     const clonedObj = await _clipboard.clone();
