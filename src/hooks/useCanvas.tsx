@@ -47,13 +47,15 @@ export const useCanvas = () => {
 
     fabric.InteractiveFabricObject.ownDefaults = {
       ...fabric.InteractiveFabricObject.ownDefaults,
-      cornerStyle: 'rect',
-      cornerStrokeColor: '#5771FF',
-      cornerSize: 8,
-      cornerColor: '#FFF',
+      cornerStyle: 'circle',
+
+      cornerStrokeColor: '#fff',
+      cornerSize: 10,
+      cornerColor: '#312CBF',
       padding: 10,
       transparentCorners: false,
-      borderColor: '#5771FF',
+      borderColor: '#312CBF',
+      borderDashArray: [7],
 
       _controlsVisibility: {
         mt: false,
@@ -110,6 +112,12 @@ export const useCanvas = () => {
     canvas.on('object:added', _saveHistory);
     canvas.on('object:removed', _saveHistory);
 
+    canvas.on('mouse:down', (event: fabric.TPointerEventInfo) => {
+      if (event.target) {
+        canvas.bringObjectToFront(event.target);
+      }
+    });
+
     if (setFabricCanvas) {
       setFabricCanvas(canvas);
     }
@@ -120,9 +128,9 @@ export const useCanvas = () => {
   };
 
   const json2Canvas = async (json: object) => {
-    await fabricCanvas?.current?.loadFromJSON(json)
-    fabricCanvas?.current?.renderAll()
-  }
+    await fabricCanvas?.current?.loadFromJSON(json);
+    fabricCanvas?.current?.renderAll();
+  };
 
   const _lockHistory = () => {
     isHistoryLocked = true;
@@ -132,33 +140,32 @@ export const useCanvas = () => {
     isHistoryLocked = false;
   };
 
-
   const undo = async () => {
-    if(historyIndex < 1 || history.length <1) return;
+    if (historyIndex < 0 || history.length < 0) return;
 
-    _lockHistory()
-    historyIndex -= 1
-    const prev = history[historyIndex]
-    await json2Canvas(prev)
-    _unlockHistory()
-  }
+    _lockHistory();
+    historyIndex -= 1;
+    const prev = history[historyIndex];
+    await json2Canvas(prev);
+    _unlockHistory();
+  };
 
   const redo = async () => {
-    if(historyIndex >= history.length - 1) return;
+    if (historyIndex >= history.length - 1) return;
 
-    _lockHistory()
-    historyIndex += 1 
-    const next = history[historyIndex]
-    await json2Canvas(next)
-    _unlockHistory()
-  }
+    _lockHistory();
+    historyIndex += 1;
+    const next = history[historyIndex];
+    await json2Canvas(next);
+    _unlockHistory();
+  };
 
   const _saveHistory = async () => {
-    if(isHistoryLocked) return;
+    if (isHistoryLocked) return;
 
-    const current = await canvas2Json()
-    history.push(current)
-    historyIndex = history.length - 1
+    const current = await canvas2Json();
+    history.push(current);
+    historyIndex = history.length - 1;
   };
 
   const exportJson = () => {
@@ -265,6 +272,6 @@ export const useCanvas = () => {
     copy,
     paste,
     redo,
-    undo
+    undo,
   };
 };
