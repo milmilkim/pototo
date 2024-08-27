@@ -1,12 +1,15 @@
 import * as fabric from 'fabric';
+import { useContext } from 'react';
+import { PototoContext } from '../Pototo';
 
 const CONTAINER_WIDTH = 500;
 const CONTAINER_HEIGHT = 500;
-import { useContext, useRef } from 'react';
-import { PototoContext } from '../Pototo';
 
 export const useCanvas = () => {
-  const { setFabricCanvas, fabricCanvas, setCurrentZoom } = useContext(PototoContext);
+  const { setFabricCanvas, fabricCanvas, setCurrentZoom } =
+    useContext(PototoContext);
+
+  let _clipboard: fabric.FabricObject;
 
   let canvasWidth = 500;
   let canvasHeight = 500;
@@ -18,7 +21,16 @@ export const useCanvas = () => {
   let lastPosX: number;
   let lastPosY: number;
 
-  const init = (canvasElementRef: React.MutableRefObject<HTMLCanvasElement | null>, _canvasnWidth: number, _canvasHeight: number) => {
+  const history: Record<string, unknown>[] = [];
+
+  let isHistoryLocked = false;
+  let historyIndex = 0;
+
+  const init = (
+    canvasElementRef: React.MutableRefObject<HTMLCanvasElement | null>,
+    _canvasnWidth: number,
+    _canvasHeight: number
+  ) => {
     if (canvasElementRef.current === null) return;
     const canvas = new fabric.Canvas(canvasElementRef.current, {
       fireRightClick: true,
@@ -89,30 +101,69 @@ export const useCanvas = () => {
       }
     });
     canvas.on('mouse:up', () => {
-      if (canvas.viewportTransform) canvas.setViewportTransform(canvas.viewportTransform);
+      if (canvas.viewportTransform)
+        canvas.setViewportTransform(canvas.viewportTransform);
       isDragging = false;
     });
+
+    canvas.on('object:modified', _saveHistory);
+    canvas.on('object:added', _saveHistory);
+    canvas.on('object:removed', _saveHistory);
 
     if (setFabricCanvas) {
       setFabricCanvas(canvas);
     }
   };
 
-  const history = useRef<fabric.FabricObject[]>([]);
+  const canvas2Json = async () => {
+    return await fabricCanvas?.current?.toJSON();
+  };
 
-  const addHistory = () => {
-    history.current = [...history.current];
+  const json2Canvas = async (json: object) => {
+    await fabricCanvas?.current?.loadFromJSON(json)
+    fabricCanvas?.current?.renderAll()
+  }
+
+  const _lockHistory = () => {
+    isHistoryLocked = true;
+  };
+
+  const _unlockHistory = () => {
+    isHistoryLocked = false;
+  };
+
+
+  const undo = async () => {
+    if(historyIndex < 1 || history.length <1) return;
+
+    _lockHistory()
+    historyIndex -= 1
+    const prev = history[historyIndex]
+    await json2Canvas(prev)
+    _unlockHistory()
+  }
+
+  const redo = async () => {
+    if(historyIndex >= history.length - 1) return;
+
+    _lockHistory()
+    historyIndex += 1 
+    const next = history[historyIndex]
+    await json2Canvas(next)
+    _unlockHistory()
+  }
+
+  const _saveHistory = async () => {
+    if(isHistoryLocked) return;
+
+    const current = await canvas2Json()
+    history.push(current)
+    historyIndex = history.length - 1
   };
 
   const exportJson = () => {
     return fabricCanvas?.current?.toObject();
   };
-
-  // const checkCanvasInitialized = () => {
-  //   if (!fabricCanvas?.current) {
-  //     throw new Error('캔버스가 초기화되지 않았습니다.');
-  //   }
-  // };
 
   const addText = (text: string, options?: Partial<fabric.ITextProps>) => {
     fabricCanvas?.current?.add(new fabric.IText(text, options));
@@ -131,7 +182,10 @@ export const useCanvas = () => {
   };
 
   const setZoom = (zoom: number, pos?: { x: number; y: number }) => {
-    const point = new fabric.Point(pos?.x ?? CONTAINER_WIDTH / 2, pos?.y ?? CONTAINER_HEIGHT / 2);
+    const point = new fabric.Point(
+      pos?.x ?? CONTAINER_WIDTH / 2,
+      pos?.y ?? CONTAINER_HEIGHT / 2
+    );
     fabricCanvas?.current?.zoomToPoint(point, zoom);
     if (setCurrentZoom) {
       setCurrentZoom(zoom);
@@ -155,7 +209,9 @@ export const useCanvas = () => {
   const deleteObject = () => {
     const selectedObjects = _getSelectedObjects();
     if (selectedObjects?.length) {
-      selectedObjects.forEach((object) => fabricCanvas?.current?.remove(object));
+      selectedObjects.forEach((object) =>
+        fabricCanvas?.current?.remove(object)
+      );
       fabricCanvas?.current?.discardActiveObject();
       fabricCanvas?.current?.renderAll();
     }
@@ -166,17 +222,15 @@ export const useCanvas = () => {
     fabricCanvas?.current?.add(image);
   };
 
-  let _clipboard : fabric.FabricObject
-
   const copy = async () => {
-    const cloned = await fabricCanvas?.current?.getActiveObject()?.clone()
-    if(cloned) {
-      _clipboard = cloned
+    const cloned = await fabricCanvas?.current?.getActiveObject()?.clone();
+    if (cloned) {
+      _clipboard = cloned;
     }
-  }
+  };
 
   const paste = async () => {
-    if(!_clipboard) return;
+    if (!_clipboard) return;
     const clonedObj = await _clipboard.clone();
     fabricCanvas?.current?.discardActiveObject();
 
@@ -198,7 +252,19 @@ export const useCanvas = () => {
     _clipboard.left += 10;
     fabricCanvas?.current?.setActiveObject(clonedObj);
     fabricCanvas?.current?.requestRenderAll();
-  }
+  };
 
-  return { addText, init, resetZoom, exportJson, addHistory, deleteObject, updateTextOptions, addImage, copy, paste };
+  return {
+    addText,
+    init,
+    resetZoom,
+    exportJson,
+    deleteObject,
+    updateTextOptions,
+    addImage,
+    copy,
+    paste,
+    redo,
+    undo
+  };
 };

@@ -11,7 +11,7 @@ const Canvas: React.FC<CanvasProps> = (props) => {
   const canvasElRef = useRef<HTMLCanvasElement | null>(null);
 
   const { fabricCanvas } = useContext(PototoContext);
-  const { init, deleteObject, copy, paste } = useCanvas();
+  const { init, deleteObject, copy, paste, undo, redo } = useCanvas();
 
   useEffect(() => {
     init(canvasElRef, props.elementWidth, props.elementHeight);
@@ -23,11 +23,18 @@ const Canvas: React.FC<CanvasProps> = (props) => {
       if (e.ctrlKey || e.metaKey) {
         switch (key) {
           case 'c':
-            copy()
+            copy();
             break;
 
           case 'v':
-            paste()
+            paste();
+            break;
+
+          case 'z':
+            if (e.shiftKey) {
+              redo();
+            } else {
+            }
             break;
 
           default:
