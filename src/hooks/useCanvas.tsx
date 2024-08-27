@@ -6,8 +6,9 @@ const CONTAINER_WIDTH = 500;
 const CONTAINER_HEIGHT = 500;
 
 export const useCanvas = () => {
-  const { setFabricCanvas, fabricCanvas, setCurrentZoom } =
+  const { setFabricCanvas, fabricCanvas, setCurrentZoom, setSelectedObject } =
     useContext(PototoContext);
+
 
   let _clipboard: fabric.FabricObject;
 
@@ -115,6 +116,9 @@ export const useCanvas = () => {
     canvas.on('mouse:down', (event: fabric.TPointerEventInfo) => {
       if (event.target) {
         canvas.bringObjectToFront(event.target);
+        setSelectedObject!(event.target);
+      } else {
+        setSelectedObject!(undefined);
       }
     });
 

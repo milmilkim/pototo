@@ -6,7 +6,7 @@ interface ToolbarProps {}
 
 const Toolbar: React.FC<ToolbarProps> = () => {
   const canvas = useCanvas();
-  const { currentZoom } = useContext(PototoContext);
+  const { currentZoom, selectedObject} = useContext(PototoContext);
 
   const handleClickAddText = () => {
     canvas.addText('hello world');
@@ -33,6 +33,8 @@ const Toolbar: React.FC<ToolbarProps> = () => {
       <button onClick={handleClickDeleteObjects}>선택된 오브젝트 삭제</button>
       <button onClick={handleClickChangeColor}>선택 텍스트 색상 변경</button>
       <button onClick={() => handleClickAddImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRF1IwK6-SxM83UpFVY6WtUZxXx-phss_gAUfdKbkTfau6VWVkt')}>이미지 추가</button>
+      {selectedObject?.toString()}
+
     </div>
   );
 };

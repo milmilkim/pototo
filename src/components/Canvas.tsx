@@ -72,6 +72,9 @@ const Canvas: React.FC<CanvasProps> = (props) => {
           border: '1px solid #e6e6e6',
         }}
         ref={canvasElRef}></canvas>
+        <div className='pototo-object-toolbar'>
+          테스트
+        </div>
     </>
   );
 };
