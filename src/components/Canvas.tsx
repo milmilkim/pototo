@@ -34,6 +34,7 @@ const Canvas: React.FC<CanvasProps> = (props) => {
             if (e.shiftKey) {
               redo();
             } else {
+              undo();
             }
             break;
 
