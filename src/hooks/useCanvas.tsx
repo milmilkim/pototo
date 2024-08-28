@@ -9,7 +9,6 @@ export const useCanvas = () => {
   const { setFabricCanvas, fabricCanvas, setCurrentZoom, setSelectedObject } =
     useContext(PototoContext);
 
-
   let _clipboard: fabric.FabricObject;
 
   let canvasWidth = 500;
@@ -37,6 +36,7 @@ export const useCanvas = () => {
       fireRightClick: true,
       fireMiddleClick: true,
       stopContextMenu: true,
+      selection: false,
       width: CONTAINER_WIDTH,
       height: CONTAINER_HEIGHT,
     });
@@ -104,8 +104,9 @@ export const useCanvas = () => {
       }
     });
     canvas.on('mouse:up', () => {
-      if (canvas.viewportTransform)
+      if (canvas.viewportTransform) {
         canvas.setViewportTransform(canvas.viewportTransform);
+      }
       isDragging = false;
     });
 
