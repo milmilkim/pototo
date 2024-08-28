@@ -35,7 +35,7 @@ const Pototo: React.FC<PototoProps> = () => {
   return (
     <PototoContext.Provider value={{ fabricCanvas: fabricCanvasRef, setFabricCanvas, currentZoom, setCurrentZoom, selectedObject, setSelectedObject }}>
       <Toolbar />
-      <Canvas elementWidth={500} elementHeight={500} />
+      <Canvas originalWidth={1080} originalHeight={1920} />
     </PototoContext.Provider>
   );
 };

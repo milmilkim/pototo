@@ -2,11 +2,10 @@ import { useState } from 'react';
 import Pototo from './Pototo';
 
 const App = () => {
-  const [status, setStatus] = useState('home');
+  const [status, setStatus] = useState('canvas');
 
   return (
-    <div className='bg-slate-500'>
-      <h1 className='text-3xl font-bold underline'>Hello world!</h1>
+    <main className='md:w-full lg:w-[1024px] max-h-screen m-auto bg-green-500 overflow-auto'>
       <button
         onClick={() =>
           setStatus((prev) => (prev === 'home' ? 'canvas' : 'home'))
@@ -20,7 +19,7 @@ const App = () => {
       ) : (
         <Pototo />
       )}
-    </div>
+    </main>
   );
 };
 

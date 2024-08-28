@@ -4,18 +4,19 @@ import { PototoContext } from '../Pototo';
 import { useGesture } from '@use-gesture/react';
 
 interface CanvasProps {
-  elementWidth: number;
-  elementHeight: number;
+  originalWidth: number;
+  originalHeight: number;
 }
 
 const Canvas: React.FC<CanvasProps> = (props) => {
   const canvasElRef = useRef<HTMLCanvasElement | null>(null);
 
   const { fabricCanvas } = useContext(PototoContext);
-  const { init, deleteObject, copy, paste, undo, redo, setScale, setAngle } = useCanvas();
+  const { init, deleteObject, copy, paste, undo, redo, setScale, setAngle } =
+    useCanvas();
 
   useEffect(() => {
-    init(canvasElRef, props.elementWidth, props.elementHeight);
+    init(canvasElRef, props.originalWidth, props.originalHeight);
     const fabricCanvasRef = fabricCanvas?.current;
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -66,26 +67,21 @@ const Canvas: React.FC<CanvasProps> = (props) => {
 
   const gesture = useGesture(
     {
-      onDrag: () => {
-      },
-      onPinch: ({offset: [scale,angle] }) => {
-        setAngle(angle)
+      onDrag: () => {},
+      onPinch: ({ offset: [scale, angle] }) => {
+        setAngle(angle);
         setScale(scale);
       },
- 
-      onHover: () => {
-      },
+
+      onHover: () => {},
     },
     {}
   );
 
   return (
-    <div style={{ touchAction: 'none' }} className='wrapper' {...gesture()}>
+    <div style={{ touchAction: 'none' }} className='border w-full flex' {...gesture()}>
       <canvas
-        width={500}
-        height={500}
         style={{
-          border: '1px solid #e6e6e6',
           touchAction: 'none',
         }}
         ref={canvasElRef}

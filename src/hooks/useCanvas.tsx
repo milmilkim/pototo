@@ -2,8 +2,9 @@ import * as fabric from 'fabric';
 import { useContext } from 'react';
 import { PototoContext } from '../Pototo';
 
-const CONTAINER_WIDTH = 500;
-const CONTAINER_HEIGHT = 500;
+const CONTAINER_WIDTH = 1080;
+const CONTAINER_HEIGHT = 1920;
+
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 export const useCanvas = () => {
@@ -12,8 +13,9 @@ export const useCanvas = () => {
 
   let _clipboard: fabric.FabricObject;
 
-  let canvasWidth = 500;
-  let canvasHeight = 500;
+  // 기본값
+  let canvasWidth = 1080;
+  let canvasHeight = 1920;
 
   const scaleFactor = 1;
   const center = { x: 0, y: 0 };
@@ -33,19 +35,25 @@ export const useCanvas = () => {
     _canvasHeight: number
   ) => {
     if (canvasElementRef.current === null) return;
+
+    canvasWidth = _canvasnWidth ?? canvasWidth;
+    canvasHeight = _canvasHeight ?? canvasHeight;
+
     const canvas = new fabric.Canvas(canvasElementRef.current, {
       fireRightClick: true,
       fireMiddleClick: true,
       stopContextMenu: true,
       selection: false,
-      width: CONTAINER_WIDTH,
-      height: CONTAINER_HEIGHT,
+      width: canvasWidth,
+      height: canvasHeight,
     });
 
-    canvasWidth = _canvasnWidth ?? CONTAINER_WIDTH;
-    canvasHeight = _canvasHeight ?? CONTAINER_HEIGHT;
+    // const containerHeight = 500;
+    // const containerWidth = 500;
+    // canvasElementRef.current.style.width = `${containerWidth}px`;
+    // canvasElementRef.current.style.height = `${containerHeight}px`;
 
-    setCenter(canvasWidth, canvasHeight);
+    // setCenter(containerWidth, containerHeight);
 
     fabric.InteractiveFabricObject.ownDefaults = {
       ...fabric.InteractiveFabricObject.ownDefaults,
