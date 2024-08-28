@@ -10,13 +10,13 @@ interface CanvasProps {
 
 const Canvas: React.FC<CanvasProps> = (props) => {
   const canvasElRef = useRef<HTMLCanvasElement | null>(null);
+  const wrapperElRef = useRef<HTMLDivElement | null>(null);
 
   const { fabricCanvas } = useContext(PototoContext);
-  const { init, deleteObject, copy, paste, undo, redo, setScale, setAngle } =
-    useCanvas();
+  const { init, deleteObject, copy, paste, undo, redo, setScale, setAngle } = useCanvas();
 
   useEffect(() => {
-    init(canvasElRef, props.originalWidth, props.originalHeight);
+    init(canvasElRef, props.originalWidth, props.originalHeight, wrapperElRef.current?.clientHeight ?? props.originalHeight);
     const fabricCanvasRef = fabricCanvas?.current;
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -79,13 +79,14 @@ const Canvas: React.FC<CanvasProps> = (props) => {
   );
 
   return (
-    <div style={{ touchAction: 'none' }} className='border w-full flex' {...gesture()}>
+    <div style={{ touchAction: 'none' }} ref={wrapperElRef} className="border w-full flex flex-grow justify-center items-center" {...gesture()}>
       <canvas
         style={{
           touchAction: 'none',
         }}
         ref={canvasElRef}
-        {...gesture()}></canvas>
+        {...gesture()}
+      ></canvas>
     </div>
   );
 };

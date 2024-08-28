@@ -2,20 +2,18 @@ import * as fabric from 'fabric';
 import { useContext } from 'react';
 import { PototoContext } from '../Pototo';
 
-const CONTAINER_WIDTH = 1080;
-const CONTAINER_HEIGHT = 1920;
-
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 export const useCanvas = () => {
-  const { setFabricCanvas, fabricCanvas, setCurrentZoom, setSelectedObject } =
-    useContext(PototoContext);
+  const { setFabricCanvas, fabricCanvas, setCurrentZoom, setSelectedObject } = useContext(PototoContext);
 
   let _clipboard: fabric.FabricObject;
 
   // 기본값
   let canvasWidth = 1080;
   let canvasHeight = 1920;
+  let containerWidth = 1080;
+  let containerHeight = 1920;
 
   const scaleFactor = 1;
   const center = { x: 0, y: 0 };
@@ -29,15 +27,15 @@ export const useCanvas = () => {
   let isHistoryLocked = false;
   let historyIndex = 0;
 
-  const init = (
-    canvasElementRef: React.MutableRefObject<HTMLCanvasElement | null>,
-    _canvasnWidth: number,
-    _canvasHeight: number
-  ) => {
+  const init = (canvasElementRef: React.MutableRefObject<HTMLCanvasElement | null>, _canvasnWidth: number, _canvasHeight: number, _containerHeight: number) => {
     if (canvasElementRef.current === null) return;
 
     canvasWidth = _canvasnWidth ?? canvasWidth;
     canvasHeight = _canvasHeight ?? canvasHeight;
+
+    containerHeight = _containerHeight;
+    const scaleFactor = containerHeight / canvasHeight;
+    containerWidth = canvasWidth * scaleFactor;
 
     const canvas = new fabric.Canvas(canvasElementRef.current, {
       fireRightClick: true,
@@ -48,12 +46,10 @@ export const useCanvas = () => {
       height: canvasHeight,
     });
 
-    // const containerHeight = 500;
-    // const containerWidth = 500;
-    // canvasElementRef.current.style.width = `${containerWidth}px`;
-    // canvasElementRef.current.style.height = `${containerHeight}px`;
-
-    // setCenter(containerWidth, containerHeight);
+    canvas.setDimensions({
+      width: containerWidth,
+      height: containerHeight,
+    });
 
     fabric.InteractiveFabricObject.ownDefaults = {
       ...fabric.InteractiveFabricObject.ownDefaults,
@@ -137,6 +133,8 @@ export const useCanvas = () => {
     if (setFabricCanvas) {
       setFabricCanvas(canvas);
     }
+
+    setZoom(scaleFactor, { x: 0, y: 0 });
   };
 
   const canvas2Json = async () => {
@@ -208,10 +206,8 @@ export const useCanvas = () => {
   };
 
   const setZoom = (zoom: number, pos?: { x: number; y: number }) => {
-    const point = new fabric.Point(
-      pos?.x ?? CONTAINER_WIDTH / 2,
-      pos?.y ?? CONTAINER_HEIGHT / 2
-    );
+    const point = new fabric.Point(pos?.x ?? containerWidth / 2, pos?.y ?? containerHeight / 2);
+
     fabricCanvas?.current?.zoomToPoint(point, zoom);
     if (setCurrentZoom) {
       setCurrentZoom(zoom);
@@ -223,11 +219,6 @@ export const useCanvas = () => {
     fabricCanvas?.current?.absolutePan(new fabric.Point(-center.x, -center.y));
   };
 
-  const setCenter = (width: number, height: number) => {
-    canvasWidth = width;
-    canvasHeight = height;
-  };
-
   const _getSelectedObjects = () => {
     return fabricCanvas?.current?.getActiveObjects();
   };
@@ -235,9 +226,7 @@ export const useCanvas = () => {
   const deleteObject = () => {
     const selectedObjects = _getSelectedObjects();
     if (selectedObjects?.length) {
-      selectedObjects.forEach((object) =>
-        fabricCanvas?.current?.remove(object)
-      );
+      selectedObjects.forEach((object) => fabricCanvas?.current?.remove(object));
       fabricCanvas?.current?.discardActiveObject();
       fabricCanvas?.current?.renderAll();
     }

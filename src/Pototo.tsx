@@ -10,7 +10,7 @@ export interface PototoContext {
   currentZoom: number;
   setCurrentZoom: React.Dispatch<React.SetStateAction<number>>;
   selectedObject: fabric.FabricObject;
-  setSelectedObject: React.Dispatch<React.SetStateAction<fabric.FabricObject | undefined>>
+  setSelectedObject: React.Dispatch<React.SetStateAction<fabric.FabricObject | undefined>>;
 }
 
 export const PototoContext = createContext<Partial<PototoContext>>({
@@ -18,7 +18,7 @@ export const PototoContext = createContext<Partial<PototoContext>>({
   setFabricCanvas: undefined,
   setCurrentZoom: undefined,
   selectedObject: undefined,
-  setSelectedObject: undefined
+  setSelectedObject: undefined,
 });
 
 interface PototoProps {}
@@ -30,12 +30,14 @@ const Pototo: React.FC<PototoProps> = () => {
   };
 
   const [currentZoom, setCurrentZoom] = useState(1);
-  const [selectedObject, setSelectedObject] = useState<fabric.FabricObject | undefined>(undefined)
+  const [selectedObject, setSelectedObject] = useState<fabric.FabricObject | undefined>(undefined);
 
   return (
     <PototoContext.Provider value={{ fabricCanvas: fabricCanvasRef, setFabricCanvas, currentZoom, setCurrentZoom, selectedObject, setSelectedObject }}>
-      <Toolbar />
-      <Canvas originalWidth={1080} originalHeight={1920} />
+      <div className="flex flex-col h-full">
+        <Toolbar />
+        <Canvas originalWidth={1080} originalHeight={1920} />
+      </div>
     </PototoContext.Provider>
   );
 };
