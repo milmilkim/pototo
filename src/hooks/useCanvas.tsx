@@ -274,15 +274,20 @@ export const useCanvas = () => {
 
   const setScale = (d: number) => {
     const objs = _getSelectedObjects();
-    const scaleAdjustmentFactor = 0.05; // 스케일 변화율 조절
 
     if (objs) {
       objs.forEach((obj) => {
-        const scaleChange = (d - 1) * scaleAdjustmentFactor;
-        const newScaleX = obj.scaleX * (1 + scaleChange);
-        const newScaleY = obj.scaleY * (1 + scaleChange);
-        obj.scaleX = newScaleX;
-        obj.scaleY = newScaleY;
+        obj.scaleX = obj.scaleY = d;
+      });
+      fabricCanvas?.current?.renderAll();
+    }
+  };
+
+  const setAngle = (angle: number) => {
+    const objs = _getSelectedObjects();
+    if (objs) {
+      objs.forEach((obj) => {
+        obj.angle = angle;
       });
       fabricCanvas?.current?.renderAll();
     }
@@ -301,5 +306,6 @@ export const useCanvas = () => {
     redo,
     undo,
     setScale,
+    setAngle,
   };
 };

@@ -11,8 +11,8 @@ interface CanvasProps {
 const Canvas: React.FC<CanvasProps> = (props) => {
   const canvasElRef = useRef<HTMLCanvasElement | null>(null);
 
-  const { fabricCanvas, selectedObject } = useContext(PototoContext);
-  const { init, deleteObject, copy, paste, undo, redo, setScale } = useCanvas();
+  const { fabricCanvas } = useContext(PototoContext);
+  const { init, deleteObject, copy, paste, undo, redo, setScale, setAngle } = useCanvas();
 
   useEffect(() => {
     init(canvasElRef, props.elementWidth, props.elementHeight);
@@ -67,13 +67,13 @@ const Canvas: React.FC<CanvasProps> = (props) => {
   const gesture = useGesture(
     {
       onDrag: () => {
-        console.log('on drag~~~~');
       },
-      onPinch: ({ movement: [d] }) => {
-        setScale(d);
+      onPinch: ({offset: [scale,angle] }) => {
+        setAngle(angle)
+        setScale(scale);
       },
+ 
       onHover: () => {
-        console.log('on hover');
       },
     },
     {}
