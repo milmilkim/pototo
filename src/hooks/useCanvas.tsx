@@ -171,6 +171,9 @@ export const useCanvas = () => {
   const _saveHistory = async () => {
     if (isHistoryLocked) return;
 
+    // historyIndex 이후의 히스토리 삭제
+    history.splice(historyIndex + 1);
+
     const current = await canvas2Json();
     history.push(current);
     historyIndex = history.length - 1;
