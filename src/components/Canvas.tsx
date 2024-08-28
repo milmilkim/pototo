@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef } from 'react';
 import { useCanvas } from '../hooks/useCanvas';
 import { PototoContext } from '../Pototo';
+import { useGesture } from '@use-gesture/react';
 
 interface CanvasProps {
   elementWidth: number;
@@ -10,8 +11,8 @@ interface CanvasProps {
 const Canvas: React.FC<CanvasProps> = (props) => {
   const canvasElRef = useRef<HTMLCanvasElement | null>(null);
 
-  const { fabricCanvas } = useContext(PototoContext);
-  const { init, deleteObject, copy, paste, undo, redo } = useCanvas();
+  const { fabricCanvas, selectedObject } = useContext(PototoContext);
+  const { init, deleteObject, copy, paste, undo, redo, setScale } = useCanvas();
 
   useEffect(() => {
     init(canvasElRef, props.elementWidth, props.elementHeight);
@@ -63,16 +64,33 @@ const Canvas: React.FC<CanvasProps> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const gesture = useGesture(
+    {
+      onDrag: () => {
+        console.log('on drag~~~~');
+      },
+      onPinch: ({ movement: [d] }) => {
+        setScale(d);
+      },
+      onHover: () => {
+        console.log('on hover');
+      },
+    },
+    {}
+  );
+
   return (
-    <>
+    <div style={{ touchAction: 'none' }} className='wrapper' {...gesture()}>
       <canvas
         width={500}
         height={500}
         style={{
           border: '1px solid #e6e6e6',
+          touchAction: 'none',
         }}
-        ref={canvasElRef}></canvas>
-    </>
+        ref={canvasElRef}
+        {...gesture()}></canvas>
+    </div>
   );
 };
 

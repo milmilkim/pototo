@@ -4,6 +4,7 @@ import { PototoContext } from '../Pototo';
 
 const CONTAINER_WIDTH = 500;
 const CONTAINER_HEIGHT = 500;
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 export const useCanvas = () => {
   const { setFabricCanvas, fabricCanvas, setCurrentZoom, setSelectedObject } =
@@ -64,6 +65,8 @@ export const useCanvas = () => {
         ml: false,
         mr: false,
       },
+
+      ...(isMobile ? { controls: {} } : {}),
     };
 
     canvas.on('mouse:wheel', (opt) => {
@@ -266,6 +269,22 @@ export const useCanvas = () => {
     fabricCanvas?.current?.requestRenderAll();
   };
 
+  const setScale = (d: number) => {
+    const objs = _getSelectedObjects();
+    const scaleAdjustmentFactor = 0.05; // 스케일 변화율 조절
+
+    if (objs) {
+      objs.forEach((obj) => {
+        const scaleChange = (d - 1) * scaleAdjustmentFactor;
+        const newScaleX = obj.scaleX * (1 + scaleChange);
+        const newScaleY = obj.scaleY * (1 + scaleChange);
+        obj.scaleX = newScaleX;
+        obj.scaleY = newScaleY;
+      });
+      fabricCanvas?.current?.renderAll();
+    }
+  };
+
   return {
     addText,
     init,
@@ -278,5 +297,6 @@ export const useCanvas = () => {
     paste,
     redo,
     undo,
+    setScale,
   };
 };
