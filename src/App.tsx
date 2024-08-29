@@ -55,10 +55,13 @@ const App = () => {
           </div>
         </div>
       ) : (
-        <Pototo
-          backgroundImage={selectedImageUrl}
-          gradientColors={gradientColors}
-        />
+        <>
+          <button onClick={() => setStatus('home')}>뒤로가기</button>
+          <Pototo
+            backgroundImage={selectedImageUrl}
+            gradientColors={gradientColors}
+          />
+        </>
       )}
     </main>
   );

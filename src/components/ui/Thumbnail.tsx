@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ImageWrapper from './ImageWrapper';
 import { usePalette } from 'color-thief-react';
 
