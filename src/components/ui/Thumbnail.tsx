@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import ImageWrapper from './ImageWrapper';
 import { usePalette } from 'color-thief-react';
 
@@ -13,19 +13,23 @@ const Thumbnail: React.FC<Props> = ({ imageSrc, clickHandler }) => {
     crossOrigin: 'anonymous',
   });
 
-  const color1 = data
-    ? data[0].replace(')', ', 0.7)').replace('rgb', 'rgba')
-    : 'hsla(0, 0%, 95%, 0.7)';
-  const color2 = data
-    ? data[1].replace(')', ', 0.5)').replace('rgb', 'rgba')
-    : 'hsla(0, 0%, 85%, 0.5)';
+  const [colors, setColors] = useState<string[]>([])
 
-  const handleClickThumbnail = useCallback(() => {
+
+  useEffect(() => {
+    if (data) {
+      const color1 = data[0].replace(')', ', 0.7)').replace('rgb', 'rgba');
+      const color2 = data[1].replace(')', ', 0.5)').replace('rgb', 'rgba');
+      setColors([color1, color2]);
+    }
+  }, [data]); 
+
+  const handleClickThumbnail = () => {
     if(loading) return;
     if (clickHandler) {
-      clickHandler(imageSrc, data);
+      clickHandler(imageSrc, colors);
     }
-  }, [clickHandler, data, imageSrc, loading]);
+  }
 
   return (
     <div
@@ -33,7 +37,7 @@ const Thumbnail: React.FC<Props> = ({ imageSrc, clickHandler }) => {
       className={`aspect-9/16 relative cursor-pointer`}
       style={{
         background: data
-          ? `linear-gradient(135deg, ${color1}, ${color2}), #fff`
+          ? `linear-gradient(135deg, ${colors[0]}, ${colors[1]}), #fff`
           : '#fff',
       }}>
       <ImageWrapper

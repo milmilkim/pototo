@@ -7,7 +7,7 @@ interface CanvasProps {
   originalWidth: number;
   originalHeight: number;
   backgroundImage?: string | null;
-  colors?: string[];
+  gradientColors?: string[];
 
 }
 
@@ -19,7 +19,7 @@ const Canvas: React.FC<CanvasProps> = (props) => {
   const { init, deleteObject, copy, paste, undo, redo, setScale, setAngle } = useCanvas();
 
   useEffect(() => {
-    init(canvasElRef, props.originalWidth, props.originalHeight, wrapperElRef.current?.clientHeight ?? props.originalHeight, props.backgroundImage);
+    init(canvasElRef, props.originalWidth, props.originalHeight, wrapperElRef.current?.clientHeight ?? props.originalHeight, props.backgroundImage, props.gradientColors);
 
  
     const fabricCanvasRef = fabricCanvas?.current;

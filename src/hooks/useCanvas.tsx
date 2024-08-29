@@ -33,7 +33,8 @@ export const useCanvas = () => {
     _canvasnWidth: number,
     _canvasHeight: number,
     _containerHeight: number,
-    backgroundImageUrl?: string | null
+    backgroundImageUrl?: string | null,
+    gradientColors?: string[]
   ) => {
     if (canvasElementRef.current === null) return;
 
@@ -144,7 +145,7 @@ export const useCanvas = () => {
     setZoom(scaleFactor, { x: 0, y: 0 });
 
     if (backgroundImageUrl) {
-      addBackgroundImage(backgroundImageUrl);
+      addBackgroundImage(backgroundImageUrl, gradientColors ?? []);
     }
   };
 
@@ -253,12 +254,44 @@ export const useCanvas = () => {
     fabricCanvas?.current?.add(image);
   };
 
-  const addBackgroundImage = async (url: string) => {
+  const addBackgroundImage = async (url: string, colors: string[]) => {
+
+    const rect = new fabric.Rect({
+      left: 0,
+      top: 0,
+      width: canvasWidth,
+      height: canvasHeight,
+      selectable: false,
+      evented: false,
+    });
+
+    const gradient = new fabric.Gradient({
+      type: 'linear',
+      gradientUnits: 'pixels', // 그라디언트의 단위
+      coords: { x1: 0, y1: 0, x2: canvasWidth, y2: canvasHeight },
+      colorStops: [
+        { offset: 0, color: colors[0] },
+        { offset: 1, color: colors[1] }
+      ],
+    });
+
+    rect.set('fill', gradient);
+
+    fabricCanvas?.current?.add(rect);
+
     const image = await fabric.FabricImage.fromURL(url);
     const w = canvasWidth / image.width;
     const h = canvasHeight / image.height;
     const scale = Math.min(w, h);
     image.scale(scale);
+    image.set({
+      left: (canvasWidth - image.getScaledWidth()) / 2, // 가운데 정렬 (가로)
+      top: (canvasHeight - image.getScaledHeight()) / 2, // 가운데 정렬 (세로)
+      originX: 'left',
+      originY: 'top',
+      selectable: false,
+      evented: false,
+    });
     fabricCanvas?.current?.add(image);
   };
 

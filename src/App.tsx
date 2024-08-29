@@ -5,7 +5,6 @@ import { getImageList } from './firebase/storage';
 import { type StorageReference } from 'firebase/storage';
 import Thumbnail from './components/ui/Thumbnail';
 
-
 type Status = 'home' | 'canvas';
 const App = () => {
   const [status, setStatus] = useState<Status>('home');
@@ -13,12 +12,11 @@ const App = () => {
   const [images, setImages] = useState<StorageReference[] | any[]>([]);
 
   const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
+  const [gradientColors, setGradientColors] = useState<string[]>([]);
 
   const fetchImages = async () => {
     const res = await getImageList();
     setImages(res.images);
-
-    console.log(res.images[0]);
   };
   useEffect(() => {
     fetchImages();
@@ -45,18 +43,22 @@ const App = () => {
               <Thumbnail
                 key={index}
                 imageSrc={image}
-                clickHandler={(imageSrc, data) => {
-                  console.log(imageSrc);
-                  console.log(data);
+                clickHandler={(imageSrc, colors) => {
                   setSelectedImageUrl(imageSrc);
-                  setStatus('canvas')
+                  if (colors) {
+                    setGradientColors(colors);
+                  }
+                  setStatus('canvas');
                 }}
               />
             ))}
           </div>
         </div>
       ) : (
-        <Pototo backgroundImage={selectedImageUrl} />
+        <Pototo
+          backgroundImage={selectedImageUrl}
+          gradientColors={gradientColors}
+        />
       )}
     </main>
   );

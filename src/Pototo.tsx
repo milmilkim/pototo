@@ -27,9 +27,10 @@ export const PototoContext = createContext<Partial<PototoContext>>({
 
 interface PototoProps {
   backgroundImage?: string | null;
+  gradientColors?: string[];
 }
 
-const Pototo: React.FC<PototoProps> = ({ backgroundImage }) => {
+const Pototo: React.FC<PototoProps> = ({ backgroundImage, gradientColors }) => {
   const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
   const setFabricCanvas = (canvas: fabric.Canvas) => {
     fabricCanvasRef.current = canvas;
@@ -56,6 +57,7 @@ const Pototo: React.FC<PototoProps> = ({ backgroundImage }) => {
           originalWidth={1080}
           originalHeight={1920}
           backgroundImage={backgroundImage}
+          gradientColors={gradientColors}
         />
       </div>
     </PototoContext.Provider>
