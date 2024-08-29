@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Pototo from './Pototo';
+import { BsCardImage, BsFillFolderFill } from 'react-icons/bs';
 
 const App = () => {
   const [status] = useState('home');
@@ -13,10 +14,10 @@ const App = () => {
           </div>
           <div className='flex gap-2 justify-between h-32 p-2'>
             <div className=' w-1/2 bg-common rounded-lg flex justify-center items-center'>
-              1
+              <BsCardImage />
             </div>
             <div className=' w-1/2 bg-common rounded-lg flex justify-center items-center'>
-              2
+              <BsFillFolderFill />
             </div>
           </div>
 
@@ -30,7 +31,6 @@ const App = () => {
             <div className='bg-red-300 aspect-9/16'>3</div>
             <div className='bg-red-300 aspect-9/16'>3</div>
             <div className='bg-red-300 aspect-9/16'>3</div>
-
           </div>
         </div>
       ) : (
