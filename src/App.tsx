@@ -5,10 +5,14 @@ import { getImageList } from './firebase/storage';
 import { type StorageReference } from 'firebase/storage';
 import Thumbnail from './components/ui/Thumbnail';
 
+
+type Status = 'home' | 'canvas';
 const App = () => {
-  const [status] = useState('home');
+  const [status, setStatus] = useState<Status>('home');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [images, setImages] = useState<StorageReference[] | any[]>([]);
+
+  const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
 
   const fetchImages = async () => {
     const res = await getImageList();
@@ -44,13 +48,15 @@ const App = () => {
                 clickHandler={(imageSrc, data) => {
                   console.log(imageSrc);
                   console.log(data);
+                  setSelectedImageUrl(imageSrc);
+                  setStatus('canvas')
                 }}
               />
             ))}
           </div>
         </div>
       ) : (
-        <Pototo />
+        <Pototo backgroundImage={selectedImageUrl} />
       )}
     </main>
   );

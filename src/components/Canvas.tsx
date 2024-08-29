@@ -6,6 +6,9 @@ import { useGesture } from '@use-gesture/react';
 interface CanvasProps {
   originalWidth: number;
   originalHeight: number;
+  backgroundImage?: string | null;
+  colors?: string[];
+
 }
 
 const Canvas: React.FC<CanvasProps> = (props) => {
@@ -16,7 +19,9 @@ const Canvas: React.FC<CanvasProps> = (props) => {
   const { init, deleteObject, copy, paste, undo, redo, setScale, setAngle } = useCanvas();
 
   useEffect(() => {
-    init(canvasElRef, props.originalWidth, props.originalHeight, wrapperElRef.current?.clientHeight ?? props.originalHeight);
+    init(canvasElRef, props.originalWidth, props.originalHeight, wrapperElRef.current?.clientHeight ?? props.originalHeight, props.backgroundImage);
+
+ 
     const fabricCanvasRef = fabricCanvas?.current;
 
     const handleKeyDown = (e: KeyboardEvent) => {

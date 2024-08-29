@@ -5,7 +5,8 @@ import { PototoContext } from '../Pototo';
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 export const useCanvas = () => {
-  const { setFabricCanvas, fabricCanvas, setCurrentZoom, setSelectedObject } = useContext(PototoContext);
+  const { setFabricCanvas, fabricCanvas, setCurrentZoom, setSelectedObject } =
+    useContext(PototoContext);
 
   let _clipboard: fabric.FabricObject;
 
@@ -27,7 +28,13 @@ export const useCanvas = () => {
   let isHistoryLocked = false;
   let historyIndex = 0;
 
-  const init = (canvasElementRef: React.MutableRefObject<HTMLCanvasElement | null>, _canvasnWidth: number, _canvasHeight: number, _containerHeight: number) => {
+  const init = (
+    canvasElementRef: React.MutableRefObject<HTMLCanvasElement | null>,
+    _canvasnWidth: number,
+    _canvasHeight: number,
+    _containerHeight: number,
+    backgroundImageUrl?: string | null
+  ) => {
     if (canvasElementRef.current === null) return;
 
     canvasWidth = _canvasnWidth ?? canvasWidth;
@@ -44,7 +51,6 @@ export const useCanvas = () => {
       selection: false,
       width: canvasWidth,
       height: canvasHeight,
-      backgroundColor: '#fff',
     });
 
     canvas.setDimensions({
@@ -136,6 +142,10 @@ export const useCanvas = () => {
     }
 
     setZoom(scaleFactor, { x: 0, y: 0 });
+
+    if (backgroundImageUrl) {
+      addBackgroundImage(backgroundImageUrl);
+    }
   };
 
   const canvas2Json = async () => {
@@ -207,7 +217,10 @@ export const useCanvas = () => {
   };
 
   const setZoom = (zoom: number, pos?: { x: number; y: number }) => {
-    const point = new fabric.Point(pos?.x ?? containerWidth / 2, pos?.y ?? containerHeight / 2);
+    const point = new fabric.Point(
+      pos?.x ?? containerWidth / 2,
+      pos?.y ?? containerHeight / 2
+    );
 
     fabricCanvas?.current?.zoomToPoint(point, zoom);
     if (setCurrentZoom) {
@@ -227,7 +240,9 @@ export const useCanvas = () => {
   const deleteObject = () => {
     const selectedObjects = _getSelectedObjects();
     if (selectedObjects?.length) {
-      selectedObjects.forEach((object) => fabricCanvas?.current?.remove(object));
+      selectedObjects.forEach((object) =>
+        fabricCanvas?.current?.remove(object)
+      );
       fabricCanvas?.current?.discardActiveObject();
       fabricCanvas?.current?.renderAll();
     }
@@ -235,6 +250,15 @@ export const useCanvas = () => {
 
   const addImage = async (url: string) => {
     const image = await fabric.FabricImage.fromURL(url);
+    fabricCanvas?.current?.add(image);
+  };
+
+  const addBackgroundImage = async (url: string) => {
+    const image = await fabric.FabricImage.fromURL(url);
+    const w = canvasWidth / image.width;
+    const h = canvasHeight / image.height;
+    const scale = Math.min(w, h);
+    image.scale(scale);
     fabricCanvas?.current?.add(image);
   };
 
@@ -299,6 +323,7 @@ export const useCanvas = () => {
     deleteObject,
     updateTextOptions,
     addImage,
+    addBackgroundImage,
     copy,
     paste,
     redo,
