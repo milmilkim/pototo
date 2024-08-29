@@ -1,9 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Pototo from './Pototo';
 import { BsCardImage, BsFillFolderFill } from 'react-icons/bs';
+import { getImageList } from './firebase/storage';
+import { type StorageReference } from 'firebase/storage';
+import Thumbnail from './components/ui/Thumbnail';
 
 const App = () => {
   const [status] = useState('home');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [images, setImages] = useState<StorageReference[] | any[]>([]);
+
+  const fetchImages = async () => {
+    const res = await getImageList();
+    setImages(res.images);
+
+    console.log(res.images[0]);
+  };
+  useEffect(() => {
+    fetchImages();
+  }, []);
 
   return (
     <main className='md:w-full lg:w-[500px] h-screen lg:h-[calc(100vh-1rem)] lg:my-2 max-h-[890px] m-auto rounded-lg bg-main-bg overflow-auto flex flex-col'>
@@ -21,16 +36,17 @@ const App = () => {
             </div>
           </div>
 
-          <div className='bg-white mt-5 flex-grow overflow-auto grid grid-cols-3 gap-1'>
-            <div className='bg-red-300 aspect-9/16'>1</div>
-            <div className='bg-red-300 aspect-9/16'>2</div>
-            <div className='bg-red-300 aspect-9/16'>3</div>
-            <div className='bg-red-300 aspect-9/16'>3</div>
-            <div className='bg-red-300 aspect-9/16'>3</div>
-            <div className='bg-red-300 aspect-9/16'>3</div>
-            <div className='bg-red-300 aspect-9/16'>3</div>
-            <div className='bg-red-300 aspect-9/16'>3</div>
-            <div className='bg-red-300 aspect-9/16'>3</div>
+          <div className='mt-5 flex-grow overflow-auto grid grid-cols-3 gap-1'>
+            {images.map((image, index) => (
+              <Thumbnail
+                key={index}
+                imageSrc={image}
+                clickHandler={(imageSrc, data) => {
+                  console.log(imageSrc);
+                  console.log(data);
+                }}
+              />
+            ))}
           </div>
         </div>
       ) : (
