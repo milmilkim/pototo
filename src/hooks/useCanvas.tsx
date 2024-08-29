@@ -44,6 +44,7 @@ export const useCanvas = () => {
       selection: false,
       width: canvasWidth,
       height: canvasHeight,
+      backgroundColor: '#fff',
     });
 
     canvas.setDimensions({
