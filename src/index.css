@@ -5,6 +5,9 @@
 @layer base {
   body,
   html {
+
+    max-height: 100vh;
+
     @apply text-white bg-main-bg-light;
     scrollbar-gutter: none;
 
@@ -22,4 +25,13 @@
       background-color: #d9d9d9;
     }
   }
+
+  main {
+    height: 100vh;
+    min-height: -webkit-fill-available; 
+    min-height: fill-available;
+    max-height: -webkit-fill-available;
+    max-height: fill-available;
+  }
 }
+

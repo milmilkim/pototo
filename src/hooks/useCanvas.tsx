@@ -1,7 +1,15 @@
 import * as fabric from 'fabric';
 import { useContext } from 'react';
 import { PototoContext } from '../Pototo';
-
+interface CanvasOptions {
+  canvasElementRef: React.MutableRefObject<HTMLCanvasElement | null>;
+  canvasWidth: number;
+  canvasHeight: number;
+  containerWidth?: number;
+  containerHeight?: number;
+  backgroundImageUrl?: string | null;
+  gradientColors?: string[];
+}
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 export const useCanvas = () => {
@@ -28,24 +36,25 @@ export const useCanvas = () => {
   let isHistoryLocked = false;
   let historyIndex = 0;
 
-  const init = (
-    canvasElementRef: React.MutableRefObject<HTMLCanvasElement | null>,
-    _canvasnWidth: number,
-    _canvasHeight: number,
-    _containerHeight: number,
-    backgroundImageUrl?: string | null,
-    gradientColors?: string[]
-  ) => {
-    if (canvasElementRef.current === null) return;
 
-    canvasWidth = _canvasnWidth ?? canvasWidth;
-    canvasHeight = _canvasHeight ?? canvasHeight;
 
-    containerHeight = _containerHeight;
-    const scaleFactor = containerHeight / canvasHeight;
-    containerWidth = canvasWidth * scaleFactor;
+  const init = (opt: CanvasOptions) => {
+    if (opt.canvasElementRef.current === null) return;
 
-    const canvas = new fabric.Canvas(canvasElementRef.current, {
+    canvasWidth = opt.canvasWidth ?? canvasWidth;
+    canvasHeight = opt.canvasHeight ?? canvasHeight;
+
+     containerWidth = opt.containerWidth ?? canvasWidth;
+     containerHeight = opt.containerHeight ?? canvasHeight;
+    
+    const widthRatio = containerWidth / canvasWidth;
+    const heightRatio = containerHeight / canvasHeight;
+    const scaleFactor = Math.min(widthRatio, heightRatio);
+    
+    const dimensionWidth = canvasWidth * scaleFactor;
+    const dimensionHeight = canvasHeight * scaleFactor;
+
+    const canvas = new fabric.Canvas(opt.canvasElementRef.current, {
       fireRightClick: true,
       fireMiddleClick: true,
       stopContextMenu: true,
@@ -55,8 +64,8 @@ export const useCanvas = () => {
     });
 
     canvas.setDimensions({
-      width: containerWidth,
-      height: containerHeight,
+      width: dimensionWidth,
+      height: dimensionHeight,
     });
 
     fabric.InteractiveFabricObject.ownDefaults = {
@@ -144,8 +153,8 @@ export const useCanvas = () => {
 
     setZoom(scaleFactor, { x: 0, y: 0 });
 
-    if (backgroundImageUrl) {
-      addBackgroundImage(backgroundImageUrl, gradientColors ?? []);
+    if (opt.backgroundImageUrl) {
+      addBackgroundImage(opt.backgroundImageUrl, opt.gradientColors ?? []);
     }
   };
 
@@ -283,6 +292,7 @@ export const useCanvas = () => {
     const w = canvasWidth / image.width;
     const h = canvasHeight / image.height;
     const scale = Math.min(w, h);
+
     image.scale(scale);
     image.set({
       left: (canvasWidth - image.getScaledWidth()) / 2, // 가운데 정렬 (가로)

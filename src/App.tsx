@@ -23,7 +23,7 @@ const App = () => {
   }, []);
 
   return (
-    <main className='md:w-full lg:w-[500px] h-screen lg:h-[calc(100vh-1rem)] lg:my-2 max-h-[890px] m-auto rounded-lg bg-main-bg overflow-auto flex flex-col'>
+    <main className='md:w-full lg:w-[500px]  m-auto rounded-lg bg-main-bg overflow-auto flex flex-col'>
       {status === 'home' ? (
         <div className='flex flex-col h-full'>
           <div className='my-2 justify-center items-center w-full text-center'>
@@ -38,7 +38,7 @@ const App = () => {
             </div>
           </div>
 
-          <div className='mt-5 flex-grow overflow-auto grid grid-cols-3 gap-1'>
+          <div className='mt-5 flex-grow  overflow-auto grid grid-cols-3 gap-1'>
             {images.map((image, index) => (
               <Thumbnail
                 key={index}

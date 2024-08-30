@@ -51,7 +51,6 @@ const Canvas: React.FC<CanvasProps> = (props) => {
       }
 
       switch (key) {
-        case 'Backspace':
         case 'Delete':
           deleteObject();
           break;
@@ -84,7 +83,7 @@ const Canvas: React.FC<CanvasProps> = (props) => {
   );
 
   return (
-    <div style={{ touchAction: 'none' }} ref={wrapperElRef} className="border w-full flex flex-grow justify-center items-center" {...gesture()}>
+    <div style={{ touchAction: 'none' }} ref={wrapperElRef} className="border w-full h-full flex flex-grow justify-center items-center" {...gesture()}>
       <canvas
         style={{
           touchAction: 'none',

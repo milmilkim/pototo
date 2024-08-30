@@ -51,7 +51,7 @@ const Pototo: React.FC<PototoProps> = ({ backgroundImage, gradientColors }) => {
         selectedObject,
         setSelectedObject,
       }}>
-      <div className='flex flex-col h-full'>
+      <div className='flex flex-col h-full flex-grow'>
         <Toolbar />
         <Canvas
           originalWidth={1080}
