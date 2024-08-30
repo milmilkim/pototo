@@ -19,7 +19,15 @@ const Canvas: React.FC<CanvasProps> = (props) => {
   const { init, deleteObject, copy, paste, undo, redo, setScale, setAngle } = useCanvas();
 
   useEffect(() => {
-    init(canvasElRef, props.originalWidth, props.originalHeight, wrapperElRef.current?.clientHeight ?? props.originalHeight, props.backgroundImage, props.gradientColors);
+    init({
+      canvasElementRef: canvasElRef,
+      canvasWidth: props.originalWidth,
+      canvasHeight: props.originalHeight,
+      containerWidth: wrapperElRef.current?.clientWidth ?? 0,
+      containerHeight: wrapperElRef.current?.clientHeight ?? 0,
+      backgroundImageUrl: props.backgroundImage,
+      gradientColors: props.gradientColors
+    });
 
  
     const fabricCanvasRef = fabricCanvas?.current;
